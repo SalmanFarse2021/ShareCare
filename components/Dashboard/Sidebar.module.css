@@ -1,0 +1,107 @@
+.sidebar {
+    width: 260px;
+    background: var(--background);
+    /* Use page background for seamless feel, or white */
+    /* If you want a distinct sidebar: background: #fff; */
+    border-right: 1px solid var(--border);
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 1rem;
+    z-index: 50;
+    transition: transform var(--transition-normal);
+}
+
+.logo {
+    font-family: var(--font-outfit);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-600);
+    margin-bottom: 2.5rem;
+    padding: 0 0.75rem;
+    letter-spacing: -0.02em;
+}
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+}
+
+.navItem {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.5rem;
+    color: var(--muted-foreground);
+    font-weight: 500;
+    font-size: 0.9375rem;
+    transition: all var(--transition-fast);
+}
+
+.navItem:hover {
+    background: var(--neutral-100);
+    color: var(--foreground);
+}
+
+.navItem.active {
+    background: var(--primary-50);
+    color: var(--primary-700);
+    font-weight: 600;
+}
+
+.navItem .icon {
+    color: var(--neutral-500);
+    transition: color var(--transition-fast);
+}
+
+.navItem:hover .icon {
+    color: var(--foreground);
+}
+
+.navItem.active .icon {
+    color: var(--primary-600);
+}
+
+.footer {
+    margin-top: auto;
+    border-top: 1px solid var(--border);
+    padding-top: 1.25rem;
+}
+
+.logoutBtn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.625rem 0.75rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--neutral-600);
+    font-weight: 500;
+    font-size: 0.9375rem;
+    border-radius: 0.5rem;
+    transition: all var(--transition-fast);
+    font-family: var(--font-inter);
+}
+
+.logoutBtn:hover {
+    background: #fef2f2;
+    color: var(--accent-500);
+}
+
+@media (max-width: 991px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+}

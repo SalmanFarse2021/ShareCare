@@ -1,0 +1,42 @@
+.container {
+    max-width: 100%;
+}
+
+.header {
+    margin-bottom: 2rem;
+}
+
+.subtitle {
+    color: var(--muted-foreground);
+    margin-top: 0.5rem;
+}
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.contentGrid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.mainContent {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.sideContent {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 1024px) {
+    .contentGrid {
+        grid-template-columns: 1fr;
+    }
+}

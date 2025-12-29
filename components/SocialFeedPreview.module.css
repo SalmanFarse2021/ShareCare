@@ -1,0 +1,119 @@
+.feedSection {
+    background: var(--background);
+    overflow: hidden;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.title h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.feedContainer {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.feedContainer::-webkit-scrollbar {
+    display: none;
+}
+
+.feedCard {
+    min-width: 300px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-normal);
+}
+
+.feedCard:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.imagePlaceholder {
+    height: 180px;
+    background: var(--neutral-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+}
+
+.content {
+    padding: 1rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.distance {
+    font-size: 0.8rem;
+    color: var(--muted-foreground);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.status {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    background: var(--secondary-500);
+    color: white;
+}
+
+.status.booked {
+    background: var(--accent-500);
+}
+
+.itemName {
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.donor {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    margin-bottom: 1rem;
+}
+
+.actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btnRequest {
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background: var(--primary-600);
+    color: white;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+@media (prefers-color-scheme: dark) {
+    .feedCard {
+        background: var(--neutral-800);
+    }
+}
