@@ -1,7 +1,7 @@
 # ShareCare 🤝
 > **Connecting Communities, One Donation at a Time.**
 
-ShareCare is a modern web application designed to bridge the gap between resource abundance and scarcity. It serves as a hyperlocal platform where individuals and organizations can coordinate the donation of essential items like food, clothing, and medical supplies to those in need.
+ShareCare is a modern mobile app designed to bridge the gap between resource abundance and scarcity. It serves as a hyperlocal platform where individuals and organizations can coordinate the donation of essential items like food, clothing, and medical supplies to those in need.
 
 ## 🌟 Key Features
 
