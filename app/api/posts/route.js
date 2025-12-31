@@ -44,6 +44,11 @@ export async function GET(req) {
             query['user.uid'] = uid;
         }
 
+        const pointId = url.searchParams.get('point');
+        if (pointId) {
+            query.point = pointId;
+        } // Ensure this logic is added to support point-specific post fetching
+
         // 4. Text Search
         if (q) {
             query.$text = { $search: q };
@@ -148,6 +153,16 @@ export async function POST(req) {
                 delete body.location.coordinates;
                 delete body.location.type;
             }
+        }
+
+        // Validate Point Association
+        if (body.source === 'donation_point') {
+            if (!body.point) {
+                return NextResponse.json({ success: false, error: 'Donation Point ID required for this post source.' }, { status: 400 });
+            }
+        } else {
+            // Remove point if source is not donation_point (cleanup)
+            delete body.point;
         }
 
         const post = await Post.create(body);

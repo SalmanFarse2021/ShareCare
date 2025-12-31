@@ -198,8 +198,16 @@ export default function PointsHubPage() {
                             background: 'white', borderRadius: '16px', overflow: 'hidden',
                             boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', display: 'flex', flexDirection: 'column'
                         }}>
-                            <div style={{ height: '100px', background: '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <MapPin size={32} color="#9ca3af" />
+                            <div style={{ height: '150px', background: '#f3f4f6', position: 'relative' }}>
+                                <iframe
+                                    width="100%"
+                                    height="100%"
+                                    style={{ border: 0 }}
+                                    loading="lazy"
+                                    allowFullScreen
+                                    referrerPolicy="no-referrer-when-downgrade"
+                                    src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${point.publicLocation?.coordinates ? `${point.publicLocation.coordinates[1]},${point.publicLocation.coordinates[0]}` : encodeURIComponent(point.publicAddress)}`}
+                                ></iframe>
                             </div>
                             <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
                                 <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>{point.name}</h3>

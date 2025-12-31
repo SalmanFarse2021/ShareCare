@@ -43,11 +43,8 @@ export default function PointDetailsPage() {
                         if (user && data.data.subscribers?.includes(user.uid)) {
                             setIsSubscribed(true);
                         }
-                        // Fetch posts by this manager
-                        const managerId = data.data.manager?._id || data.data.manager;
-                        if (managerId) {
-                            fetchPosts(managerId);
-                        }
+                        // Fetch posts associated with this point
+                        fetchPosts(data.data._id);
                     }
                 })
                 .catch(err => console.error(err))
@@ -55,11 +52,12 @@ export default function PointDetailsPage() {
         }
     }, [id, user]);
 
-    const fetchPosts = async (managerId) => {
+    const fetchPosts = async (pointId) => {
         setLoadingPosts(true);
         try {
-            // Fetch active posts by this user (manager)
-            const res = await fetch(`/api/posts?uid=${managerId}&status=active&limit=50`);
+            // Fetch active posts linked to this point
+            // We use 'point' filter which we added to the API
+            const res = await fetch(`/api/posts?point=${pointId}&status=active&limit=50`);
             const data = await res.json();
             if (data.success) {
                 setPosts(data.data);

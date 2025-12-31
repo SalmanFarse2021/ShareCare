@@ -18,6 +18,7 @@ export default function PostCard({ post, onEdit, onDelete, onClick }) {
     } = post;
 
     const [showMenu, setShowMenu] = useState(false);
+    const [showMap, setShowMap] = useState(false);
 
     // ... (rest)
 
@@ -233,17 +234,28 @@ export default function PostCard({ post, onEdit, onDelete, onClick }) {
                     <span>📦 {quantity} {unit}</span>
                     <span>✨ {condition}</span>
                     {location?.address && (
-                        <a
-                            href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(location.address)}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()} // Prevent card click
-                            style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#4b5563', textDecoration: 'none' }}
-                            onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
-                            onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
-                        >
-                            <MapPin size={14} /> {location.address}
-                        </a>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <a
+                                href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(location.address)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#4b5563', textDecoration: 'none' }}
+                                onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
+                                onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
+                            >
+                                <MapPin size={14} /> {location.address}
+                            </a>
+                            <button
+                                onClick={(e) => { e.stopPropagation(); setShowMap(!showMap); }}
+                                style={{
+                                    background: 'none', border: '1px solid #e5e7eb', borderRadius: '4px',
+                                    fontSize: '0.75rem', padding: '2px 6px', cursor: 'pointer', color: 'var(--primary-600)'
+                                }}
+                            >
+                                {showMap ? 'Hide Map' : 'View Map'}
+                            </button>
+                        </div>
                     )}
                     {expiryDate && (
                         <span style={{
@@ -254,6 +266,20 @@ export default function PostCard({ post, onEdit, onDelete, onClick }) {
                         </span>
                     )}
                 </div>
+
+                {showMap && location && (
+                    <div style={{ marginTop: '1rem', width: '100%', height: '200px', borderRadius: '8px', overflow: 'hidden' }} onClick={(e) => e.stopPropagation()}>
+                        <iframe
+                            width="100%"
+                            height="100%"
+                            style={{ border: 0 }}
+                            loading="lazy"
+                            allowFullScreen
+                            referrerPolicy="no-referrer-when-downgrade"
+                            src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${location.coordinates ? `${location.coordinates[1]},${location.coordinates[0]}` : encodeURIComponent(location.address)}`}
+                        ></iframe>
+                    </div>
+                )}
             </div>
 
             <div className={styles.cardFooter}>

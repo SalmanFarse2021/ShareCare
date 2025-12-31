@@ -81,10 +81,55 @@ export default function CreatePostModal({ isOpen, onClose, editPost = null }) {
         }
     }, [isOpen, editPost]);
 
+    // Point Search State
+    const [pointQuery, setPointQuery] = useState('');
+    const [pointResults, setPointResults] = useState([]);
+    const [showPointResults, setShowPointResults] = useState(false);
+    const [selectedPoint, setSelectedPoint] = useState(null);
+
+    // Debounced Point Search
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (pointQuery.length >= 2 && !selectedPoint) {
+                fetch(`/api/points/search?q=${encodeURIComponent(pointQuery)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            setPointResults(data.data);
+                            setShowPointResults(true);
+                        }
+                    });
+            } else {
+                setPointResults([]);
+            }
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [pointQuery, selectedPoint]);
+
     if (!isOpen) return null;
+
+    const handlePointSelect = (point) => {
+        setPointQuery(point.name);
+        setSelectedPoint(point);
+        setShowPointResults(false);
+        setFormData(prev => ({
+            ...prev,
+            locationAddress: point.publicAddress,
+            locationCoordinates: point.publicLocation?.coordinates || null
+        }));
+    };
 
     const handleChange = (e) => {
         const { name, value, type, checked, files } = e.target;
+
+        if (name === 'source') {
+            // Reset point selection if source changes
+            if (value !== 'donation_point') {
+                setSelectedPoint(null);
+                setPointQuery('');
+            }
+        }
+
         if (type === 'file') {
             const newFiles = Array.from(files);
             setFormData(prev => ({
@@ -119,6 +164,13 @@ export default function CreatePostModal({ isOpen, onClose, editPost = null }) {
         setLoading(true);
         setError(null);
 
+        // Validation for Donation Point
+        if (formData.source === 'donation_point' && !selectedPoint) {
+            setError("Please select a valid Donation Point.");
+            setLoading(false);
+            return;
+        }
+
         try {
             const uploadedImageUrls = [];
 
@@ -139,7 +191,7 @@ export default function CreatePostModal({ isOpen, onClose, editPost = null }) {
                 }
             }
 
-            // Combine with existing images if editing (simple append strategy for now)
+            // Combine with existing images if editing
             const finalImages = editPost
                 ? [...(editPost.images || []), ...uploadedImageUrls]
                 : uploadedImageUrls;
@@ -165,7 +217,8 @@ export default function CreatePostModal({ isOpen, onClose, editPost = null }) {
                 expiryDate: formData.type === 'food' ? formData.expiryDate : null,
                 availabilityDuration: formData.availability,
                 source: formData.source,
-                isAnonymous: formData.isAnonymous
+                isAnonymous: formData.isAnonymous,
+                point: selectedPoint ? selectedPoint._id : null
             };
 
             const url = editPost ? `/api/posts/${editPost._id}` : '/api/posts';
@@ -192,10 +245,6 @@ export default function CreatePostModal({ isOpen, onClose, editPost = null }) {
 
     return (
         <div className={styles.overlay}>
-            {/* Nest MapPicker here or outside? If nested, it might get covered by this modal's z-index if not careful.
-                 But styles.overlay usually has high z-index. MapPicker also has styles.overlay. 
-                 Since MapPicker is logically "above", it should work if it renders later in DOM or has higher z-index.
-                 I added zIndex: 2000 to MapPicker. */}
             <MapPicker
                 isOpen={isMapOpen}
                 onClose={() => setIsMapOpen(false)}
@@ -308,12 +357,53 @@ export default function CreatePostModal({ isOpen, onClose, editPost = null }) {
                             </div>
                         </div>
 
+                        {formData.source === 'donation_point' && (
+                            <div className={styles.field} style={{ position: 'relative' }}>
+                                <label className={styles.label}>Donation Point Name</label>
+                                <input
+                                    type="text"
+                                    value={pointQuery}
+                                    onChange={(e) => {
+                                        setPointQuery(e.target.value);
+                                        setSelectedPoint(null); // Reset selection on edit
+                                    }}
+                                    className={styles.input}
+                                    placeholder="Start typing to search points..."
+                                />
+                                {showPointResults && pointResults.length > 0 && (
+                                    <div style={{
+                                        position: 'absolute', top: '100%', left: 0, right: 0,
+                                        background: 'white', border: '1px solid #e5e7eb', borderRadius: '0.5rem',
+                                        zIndex: 10, maxHeight: '200px', overflowY: 'auto', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                                    }}>
+                                        {pointResults.map(p => (
+                                            <div
+                                                key={p._id}
+                                                onClick={() => handlePointSelect(p)}
+                                                style={{ padding: '0.75rem', cursor: 'pointer', borderBottom: '1px solid #f3f4f6' }}
+                                                className="hover:bg-gray-50"
+                                            >
+                                                <div style={{ fontWeight: '500' }}>{p.name}</div>
+                                                <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>{p.publicAddress}</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
                         <div className={styles.field}>
                             <label className={styles.label}>Location (Approximate)</label>
                             {isLoaded ? (
                                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                                     <div style={{ flex: 1 }}>
-                                        <LocationSearch onLocationSelect={handleLocationSelect} defaultValue={formData.locationAddress} />
+                                        <LocationSearch
+                                            onLocationSelect={handleLocationSelect}
+                                            defaultValue={formData.locationAddress}
+                                        // Lock location if point selected? Or allow overwrite? 
+                                        // User requested "put one extra box... autofill address". 
+                                        // Best to allow editing but default to point.
+                                        />
                                     </div>
                                     <button
                                         type="button"

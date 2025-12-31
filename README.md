@@ -27,6 +27,7 @@ ShareCare is a modern mobile app designed to bridge the gap between resource abu
 ## 🛠️ Technology Stack
 
 - **Frontend**: [Next.js 14](https://nextjs.org/) (App Router), React
+- **Mobile**: [Flutter](https://flutter.dev/) (Android & iOS)
 - **Backend API**: Next.js Server Actions & API Routes
 - **Database**: [MongoDB](https://www.mongodb.com/) (Data persistence), [Firebase](https://firebase.google.com/) (Auth & User Sync)
 - **Real-Time**: [Socket.IO](https://socket.io/) (Messaging & Notifications)
@@ -81,6 +82,23 @@ Follow these steps to set up the project locally.
    ```
 
    Open [http://localhost:3000](http://localhost:3000) to view the app.
+
+### 📱 Running the Mobile App
+
+The project includes a full native mobile application located in the `mobile/` directory.
+
+1.  **Prerequisites**:
+    - [Install Flutter SDK](https://docs.flutter.dev/get-started/install)
+    - Ensure your backend (`npm run dev`) is running.
+
+2.  **Run on Emulator/Device**:
+    ```bash
+    cd mobile
+    flutter pub get
+    flutter run
+    ```
+
+> **Note**: For detailed mobile setup (including API keys and iOS config), see [mobile/README.md](./mobile/README.md).
 
 ## 📁 Project Structure
 

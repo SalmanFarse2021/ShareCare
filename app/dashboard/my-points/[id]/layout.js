@@ -1,17 +1,18 @@
 "use client";
+import React, { use } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LayoutDashboard, Package, BarChart2, Settings, Users, ArrowLeft } from 'lucide-react';
 
 export default function PointDashboardLayout({ children, params }) {
     const pathname = usePathname();
-    const { id } = params;
+    const { id } = use(params);
 
     const navItems = [
         { name: 'Overview', href: `/dashboard/my-points/${id}`, icon: LayoutDashboard },
         { name: 'Inventory', href: `/dashboard/my-points/${id}/inventory`, icon: Package },
         { name: 'Analysis', href: `/dashboard/my-points/${id}/analysis`, icon: BarChart2 },
-        { name: 'Team', href: `/dashboard/points/${id}/team`, icon: Users }, // Keeping existing team internal route for now
+        { name: 'Team', href: `/dashboard/my-points/${id}/team`, icon: Users }, // Updated to my-points
         { name: 'Settings', href: `/dashboard/points/${id}/edit`, icon: Settings },
     ];
 

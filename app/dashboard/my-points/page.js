@@ -11,7 +11,7 @@ export default function MyPointsPage() {
 
     useEffect(() => {
         if (!user) return;
-        fetch(`/api/points?manager=${user.uid}`)
+        fetch(`/api/points?manager=${user.uid}`, { cache: 'no-store' })
             .then(res => res.json())
             .then(data => {
                 if (data.success) setMyPoints(data.data);

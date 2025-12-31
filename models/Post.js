@@ -58,6 +58,10 @@ const PostSchema = new mongoose.Schema({
         enum: ['individual', 'donation_point', 'walk_in'],
         default: 'individual'
     },
+    point: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Point'
+    },
     isAnonymous: {
         type: Boolean,
         default: false

@@ -1,22 +1,45 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import StatsCard from '@/components/Dashboard/StatsCard';
-import { Users, Package, Bell, ExternalLink, Edit, QrCode } from 'lucide-react';
+import { Users, Package, Bell, ExternalLink, Edit, QrCode, Trash2 } from 'lucide-react';
 
 export default function PointOverviewPage() {
     const { id } = useParams();
     const router = useRouter();
+    const { user } = useAuth();
     const [point, setPoint] = useState(null);
     const [loading, setLoading] = useState(true);
     const [stats, setStats] = useState({ items: 0 });
+
+    const handleDelete = async () => {
+        if (!confirm("Are you sure you want to delete this Donation Point? This action cannot be undone.")) return;
+
+        try {
+            const res = await fetch(`/api/points/${id}?uid=${user?.uid}`, {
+                method: 'DELETE'
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                router.refresh();
+                router.push('/dashboard/my-points');
+            } else {
+                alert(data.error || "Failed to delete point");
+            }
+        } catch (error) {
+            console.error("Delete point error", error);
+            alert("An error occurred");
+        }
+    };
 
     useEffect(() => {
         if (!id) return;
         setLoading(true);
 
         // 1. Fetch Point Data
-        fetch(`/api/points/${id}`)
+        fetch(`/api/points/${id}`, { cache: 'no-store' })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
@@ -155,6 +178,14 @@ export default function PointOverviewPage() {
                                     cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', fontWeight: '500', color: '#374151'
                                 }}>
                                 <QrCode size={18} /> Get QR Poster
+                            </button>
+                            <button
+                                onClick={handleDelete}
+                                style={{
+                                    padding: '10px', borderRadius: '8px', border: '1px solid #fee2e2', background: '#fef2f2',
+                                    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', fontWeight: '500', color: '#dc2626'
+                                }}>
+                                <Trash2 size={18} /> Delete Point
                             </button>
                         </div>
                     </div>
